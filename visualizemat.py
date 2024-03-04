@@ -3,16 +3,23 @@ import matplotlib.pyplot as plt
 import imageio
 import cv2
 
+goal = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+
 def plot_matrix(matrices, goal, output_file='E:/ai1/puzzle_animation.gif', delay=2000):
-    images = [] 
+    images = []
+    x = []
+    for mat in matrices:
+        m = [list(row) for row in mat]
+        x.append(m)
+
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1
     font_thickness = 2
     height = len(matrices[0]) * 50
     width = len(matrices[0][0]) * 50
-    for matrix in matrices:
+    for matrix in x:
         img = np.zeros((height, width, 3), np.uint8)
-        img.fill(255)  
+        img.fill(255)
         for i in range(len(matrix)):
             for j in range(len(matrix[0])):
                 if matrix[i][j] != 0:
@@ -26,7 +33,7 @@ def plot_matrix(matrices, goal, output_file='E:/ai1/puzzle_animation.gif', delay
 
         images.append(img)
 
-    if matrix == goal:
+    if np.array_equal(np.array(matrix), goal):
         green_bg = np.ones((height, width, 3), np.uint8) * 255  # Fill with white background
         green_bg[:, :] = (0, 255, 0)  # Set color to green
         images.append(green_bg)
@@ -36,6 +43,4 @@ def plot_matrix(matrices, goal, output_file='E:/ai1/puzzle_animation.gif', delay
         images.append(red_bg)
 
     # Save images as a GIF
-    imageio.mimsave(output_file, images, duration=delay)# # Example usage:
-
-
+    imageio.mimsave(output_file, images, duration=delay)  # Example usage:
