@@ -105,7 +105,10 @@ class PuzzleSolver(QWidget):
         # unsolved case 
         # self.initial_state = ((7,0,2), (8,5,3), (6,4,1))
         # lab case 
-        self.initial_state = ((1,2,5), (3,4,0), (6,7,8))
+        # self.initial_state = ((1,2,5), (3,4,0), (6,7,8))
+        # bigger case 15
+        self.initial_state = ((7,2,5), (3,1,0), (6,4,8))
+ 
         
         self.algorithm = None
         self.cells = []
