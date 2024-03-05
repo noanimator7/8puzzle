@@ -61,6 +61,9 @@ def Astar(starts, Eucidean=True):
         cost = {}
         cost[starts] = 0
 
+        if start.state == goal:
+            return ("",[start.state]),0,1
+
         # Keep looping until solution found
         while True:
 

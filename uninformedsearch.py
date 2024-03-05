@@ -56,7 +56,11 @@ def uninformed_search(start, bfs=True):
         explored = set()
         frontier_explored = set()
 
+        if start.state == goal:
+            return ("",[start.state]),0,1
+
         # Keep looping until solution found
+
         while True:
 
             # If nothing left in frontier, then no path
@@ -96,3 +100,4 @@ def uninformed_search(start, bfs=True):
                     child = Node(state=state, parent=node, action=action , level = node.level + 1)
                     frontier.add(child)
                     frontier_explored.add(child)
+

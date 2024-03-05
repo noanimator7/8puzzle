@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QComboBox, QLabel, QGridLayout, QDialog, QTextEdit, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QComboBox, QLabel, QGridLayout, QDialog, QTextEdit, QMessageBox,QSpinBox,QAbstractSpinBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -13,9 +13,9 @@ class StateViewer(QDialog):
         super().__init__()
 
         self.setWindowTitle("Puzzle States")
-        self.setGeometry(200, 200, 500, 500)
+        self.setGeometry(200, 200, 600, 400)
 
-        self.layout = QVBoxLayout()
+        self.layout = QVBoxLayout() 
         self.setLayout(self.layout)
 
         self.cells = cells
@@ -70,7 +70,7 @@ class StateViewer(QDialog):
                 label = QLabel(str(state[i][j]))
                 label.setFont(QFont("Arial", 12))
                 label.setAlignment(Qt.AlignCenter)
-                label.setStyleSheet("border: 1px solid black")
+                label.setStyleSheet("QLabel{ padding: 30px; width: 100px; height:100px ; font-size: 32px; margin:0px 0px ; border: 1px solid black; background-color:white}")
                 self.grid_layout.addWidget(label, i+1, j)
 
 class PuzzleSolver(QWidget):
@@ -81,8 +81,33 @@ class PuzzleSolver(QWidget):
         self.t  = None
         self.setWindowTitle("8 Puzzle Solver")
         self.setGeometry(200, 200, 600, 400)
+        
+        self.inputs_array = []
 
         self.layout = QVBoxLayout()
+        grid_layout = QGridLayout()
+
+        for i in range(3):
+            row_inputs = []
+            for j in range(3):
+                input_box = QSpinBox()
+                input_box.setAlignment(Qt.AlignCenter)
+                input_box.setStyleSheet("QSpinBox { padding: 5px; width: 100px; height:100px ; font-size: 32px; margin:0 0;}")
+                input_box.setButtonSymbols(QAbstractSpinBox.NoButtons)
+                input_box.setMinimum(0)
+                input_box.setMaximum(8)
+                grid_layout.addWidget(input_box, i, j)
+                row_inputs.append(input_box)
+            self.inputs_array.append(row_inputs)
+        
+        self.layout.addLayout(grid_layout)
+        self.setLayout(self.layout)
+
+        self.choose_algorithm_label = QLabel("Choose Search Algorithm:")
+        self.choose_algorithm_label.setFixedSize(500, 20)
+        self.layout.addWidget(self.choose_algorithm_label)
+
+        self.layout.addStretch()
 
         self.algorithm_combobox = QComboBox()
         self.algorithm_combobox.addItem("DFS")
@@ -102,18 +127,29 @@ class PuzzleSolver(QWidget):
         self.expanded_nodes = QLabel("Nodes Expanded: ")
         self.search_depth = QLabel("Search Depth: ")
         self.running_time = QLabel("Running Time: ")
-        # unsolved case 
-        # self.initial_state = ((7,0,2), (8,5,3), (6,4,1))
-        # lab case 
-        # self.initial_state = ((1,2,5), (3,4,0), (6,7,8))
-        # bigger case 15
-        self.initial_state = ((7,2,5), (3,1,0), (6,4,8))
+     
+        #self.initial_state = ((7,2,5), (3,1,0), (6,4,8))
  
         
         self.algorithm = None
         self.cells = []
 
+
     def solve_puzzle(self):
+        # Create a list to store values of all input boxes
+        inputs_values = []
+
+        # Retrieve values from input boxes and store them in inputs_values
+        for row_inputs in self.inputs_array:
+            for input_box in row_inputs:
+                value = input_box.value()
+                inputs_values.append(value)
+
+        #print(inputs_values)
+        tuple1 = tuple(inputs_values[:3])
+        tuple2 = tuple(inputs_values[3:6])
+        tuple3 = tuple(inputs_values[6:])
+        self.initial_state = (tuple1, tuple2, tuple3)
         if getInvCount(self.initial_state) % 2 != 0:
             QMessageBox.critical(self, "No Solution", "No solution found.")
             return

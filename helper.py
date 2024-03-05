@@ -58,4 +58,7 @@ def getInvCount(arr):
             if newarr[j] != empty_value and newarr[i] != empty_value and newarr[i] > newarr[j]:
                 inv_count += 1
     return inv_count
-    
+
+
+arr=[[8,1,2],[0,4,3],[7,6,5]]
+print(getInvCount(arr))
