@@ -27,27 +27,28 @@ class StackFrontier():
    
 class QueueFrontier:
     def __init__(self):
-        self.frontier = queue.Queue()
+        self.frontier = deque()
 
     def add(self, node):
-        self.frontier.put(node)
+        self.frontier.append(node)
 
     def empty(self):
-        return self.frontier.empty()
+        return len(self.frontier) == 0
 
     def remove(self):
         if self.empty():
             raise Exception("empty frontier")
         else:
             
-            return self.frontier.get()
+            return self.frontier.popleft()
 
 def uninformed_search(start, bfs=True):
            # Keep track of number of states explored
         num_explored = 0
+        search_depth = 0 
 
         # Initialize frontier to just the starting position
-        start = Node(state=start, parent=None, action=None)
+        start = Node(state=start, parent=None, action=None , level = 0)
         frontier = QueueFrontier() if bfs else StackFrontier()
         frontier.add(start)
 
@@ -66,6 +67,7 @@ def uninformed_search(start, bfs=True):
             node = frontier.remove()
             # print(node.state)
             num_explored += 1
+            search_depth = max(search_depth , node.level)
 
             # If node is the goal, then we have a solution
             if node.state == goal:
@@ -78,10 +80,11 @@ def uninformed_search(start, bfs=True):
                 actions.reverse()
                 cells.reverse()
                 solution = (actions, cells)
-                return solution
+                return solution , search_depth , num_explored 
 
             # Mark node as explored
             explored.add(node.state)
+
             # print("SIU")
             # print(explored.remove())
 
@@ -90,6 +93,6 @@ def uninformed_search(start, bfs=True):
             for state, action in neighbor:
                 
                 if state not in frontier_explored and state not in explored:
-                    child = Node(state=state, parent=node, action=action)
+                    child = Node(state=state, parent=node, action=action , level = node.level + 1)
                     frontier.add(child)
                     frontier_explored.add(child)

@@ -48,10 +48,11 @@ def h_n_ecludian(state ,  goal =  goal ):
 def Astar(starts, Eucidean=True):
            # Keep track of number of states explored
         num_explored = 0
+        search_depth = 0 
 
         # Initialize frontier to just the starting position
         h_n = h_n_ecludian if Eucidean else h_n_Manhattan
-        start = Node(state=starts, parent=None, action=None)
+        start = Node(state=starts, parent=None, action=None , level = 0 )
         frontier = PQueueFrontier()
         frontier.add((h_n(starts), start))
 
@@ -71,6 +72,8 @@ def Astar(starts, Eucidean=True):
             _, node = frontier.remove()
             # print(node.state)
             num_explored += 1
+            search_depth = max(search_depth , node.level)
+
 
             # If node is the goal, then we have a solution
             if node.state == goal:
@@ -83,7 +86,7 @@ def Astar(starts, Eucidean=True):
                 actions.reverse()
                 cells.reverse()
                 solution = (actions, cells)
-                return solution
+                return solution , search_depth , num_explored
 
             # Add neighbors to frontier
             neighbor = neighbors(node.state)
@@ -91,6 +94,6 @@ def Astar(starts, Eucidean=True):
                 new_cost = cost[node.state] + 1
                 if state not in cost or new_cost < cost[state]:
                     priority = h_n(state) + new_cost
-                    child = Node(state=state, parent=node, action=action )
+                    child = Node(state=state, parent=node, action=action  , level= node.level + 1)
                     frontier.add((priority, child))
                 cost[state] = new_cost
