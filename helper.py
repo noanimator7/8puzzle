@@ -44,7 +44,6 @@ def neighbors(state):
     return moves
 
     
-    return moves
 
 
 def getInvCount(arr):

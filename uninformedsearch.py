@@ -27,20 +27,20 @@ class StackFrontier():
    
 class QueueFrontier:
     def __init__(self):
-        self.frontier = deque()
+        self.frontier = queue.Queue()
 
     def add(self, node):
-        self.frontier.append(node)
+        self.frontier.put(node)
 
     def empty(self):
-        return len(self.frontier) == 0
+        return self.frontier.empty()
 
     def remove(self):
         if self.empty():
             raise Exception("empty frontier")
         else:
             
-            return self.frontier.popleft()
+            return self.frontier.get()
 
 def uninformed_search(start, bfs=True):
            # Keep track of number of states explored

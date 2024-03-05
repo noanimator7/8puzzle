@@ -1,7 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QComboBox, QLabel, QGridLayout, QDialog, QTextEdit
-from PyQt5.QtGui import QFont, QFontMetrics
-from PyQt5.QtCore import Qt # Add this import statement
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QComboBox, QLabel, QGridLayout, QDialog, QTextEdit, QMessageBox
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
+
 from uninformedsearch import uninformed_search
 from informedsearch import Astar
 from helper import getInvCount
@@ -37,11 +38,20 @@ class StateViewer(QDialog):
         self.layout.addWidget(self.search_depth_label)
         self.layout.addWidget(self.running_time_label)
 
+        self.prev_button = QPushButton("Previous Step")
+        self.prev_button.clicked.connect(self.prev_step)
+        self.layout.addWidget(self.prev_button)
+
         self.next_button = QPushButton("Next Step")
         self.next_button.clicked.connect(self.next_step)
         self.layout.addWidget(self.next_button)
 
         self.update_state()
+
+    def prev_step(self):
+        if self.current_step > 0:
+            self.current_step -= 1
+            self.update_state()
 
     def next_step(self):
         if self.current_step < len(self.cells) - 1:
@@ -92,14 +102,17 @@ class PuzzleSolver(QWidget):
         self.expanded_nodes = QLabel("Nodes Expanded: ")
         self.search_depth = QLabel("Search Depth: ")
         self.running_time = QLabel("Running Time: ")
-
-        self.initial_state = ((8, 6, 7), (2, 5, 4), (3, 0, 1))
+        # unsolved case 
+        # self.initial_state = ((7,0,2), (8,5,3), (6,4,1))
+        # lab case 
+        self.initial_state = ((1,2,5), (3,4,0), (6,7,8))
+        
         self.algorithm = None
         self.cells = []
 
     def solve_puzzle(self):
         if getInvCount(self.initial_state) % 2 != 0:
-            print("No solution")
+            QMessageBox.critical(self, "No Solution", "No solution found.")
             return
 
         self.algorithm = self.algorithm_combobox.currentText()
@@ -118,17 +131,14 @@ class PuzzleSolver(QWidget):
         self.update_stats()
 
     def show_states(self ,  time):
-        # (self, cells, cost_of_path, nodes_expanded, search_depth, running_time):
         state_viewer = StateViewer(self.cells, len(self.actions), self.num_explored , self.search_d, time)
         state_viewer.exec_()
 
     def update_stats(self):
-        self.path_cost.setText("Cost of Path: " + str(len(self.actions)))
+        self.path_cost.setText("Cost of Path: " + str(len(self.cells)))
         self.expanded_nodes.setText("Nodes Expanded: " + str(self.num_explored))
         self.search_depth.setText("Search Depth: " + str(self.search_d))
         self.running_time.setText("Running Time: " + str(self.t))
-
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
