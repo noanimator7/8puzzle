@@ -145,7 +145,11 @@ class PuzzleSolver(QWidget):
                 value = input_box.value()
                 inputs_values.append(value)
 
-        #print(inputs_values)
+        # Validate puzzle configuration
+        if not self.is_valid_puzzle(inputs_values):
+            QMessageBox.critical(self, "Invalid Puzzle", "Please enter a valid puzzle configuration.")
+            return
+
         tuple1 = tuple(inputs_values[:3])
         tuple2 = tuple(inputs_values[3:6])
         tuple3 = tuple(inputs_values[6:])
@@ -168,6 +172,15 @@ class PuzzleSolver(QWidget):
         self.t = str(round(end  - start, 4))
         self.show_states(self.t)
         self.update_stats()
+
+    def is_valid_puzzle(self, puzzle):
+        """
+        Check if the input puzzle configuration is valid.
+        """
+        unique_numbers = set(puzzle)
+        if len(unique_numbers) != 9 or 0 not in unique_numbers:
+            return False
+        return True
 
     def show_states(self ,  time):
         state_viewer = StateViewer(self.cells, len(self.actions) - 1, self.num_explored , self.search_d, time)
