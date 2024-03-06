@@ -82,7 +82,7 @@ def Astar(starts, Eucidean=True):
             if node.state == goal:
                 actions = []
                 cells = []
-                while node.parent is not None:
+                while node is not None:
                     actions.append(node.action)
                     cells.append(node.state)
                     node = node.parent

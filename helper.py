@@ -61,4 +61,3 @@ def getInvCount(arr):
 
 
 arr=[[8,1,2],[0,4,3],[7,6,5]]
-print(getInvCount(arr))

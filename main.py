@@ -170,7 +170,7 @@ class PuzzleSolver(QWidget):
         self.update_stats()
 
     def show_states(self ,  time):
-        state_viewer = StateViewer(self.cells, len(self.actions), self.num_explored , self.search_d, time)
+        state_viewer = StateViewer(self.cells, len(self.actions) - 1, self.num_explored , self.search_d, time)
         state_viewer.exec_()
 
     def update_stats(self):
